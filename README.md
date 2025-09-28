@@ -1,8 +1,8 @@
 # Guía de despliegue con Docker Compose
 
-Este `docker-compose.yml` levanta **dos bases PostgreSQL** (una por microservicio) y **dos APIs**:  
-- `user` (gestión de clientes)  
-- `transaction` (cuentas y movimientos; consulta clientes vía Feign al servicio `user`)
+Se implementaron dos microservicios —user y transaction—, cada uno con su propia base de datos para garantizar el aislamiento de datos, la escalabilidad independiente, la resiliencia ante fallos y la facilidad de despliegue y pruebas. Cada servicio incluye un README específico que describe su propósito, endpoints, configuración y procedimientos de ejecución, a fin de facilitar su comprensión y mantenimiento.
+
+Para simplificar el despliegue y ejecutar las pruebas de forma cómoda, se definió un Docker Compose que orquesta ambos microservicios y sus bases de datos. El archivo crea la red, levanta las dos instancias de PostgreSQL y publica las APIs con su configuración necesaria para que se comuniquen entre sí sin pasos manuales adicionales.
 
 ---
 

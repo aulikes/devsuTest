@@ -1,0 +1,1 @@
+Los Scripts establecidos en esta carpeta son solo de carácter informativo, debido a que cada aplicación utiliza flyway para crear sus respectivas tablas en la BD correspondiente.

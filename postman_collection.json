@@ -1,0 +1,269 @@
+{
+	"info": {
+		"_postman_id": "9fb2269f-8530-49c9-b5c5-b62baf951e2f",
+		"name": "RETO - Devsu",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18052427"
+	},
+	"item": [
+		{
+			"name": "Account",
+			"item": [
+				{
+					"name": "New Account",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"accountType\": \"CORRIENTE\",\n  \"clientId\": \"313082865086\",\n  \"initialBalance\": 500000.00\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8091/cuentas",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8091",
+							"path": [
+								"cuentas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Movement",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"accountNumber\": \"778296708624\",\n  \"amount\": -500000000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8091/movimientos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8091",
+							"path": [
+								"movimientos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Movements",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8091/movimientos?accountNumber=514228468671&from=2025-01-01&to=2025-12-31",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8091",
+							"path": [
+								"movimientos"
+							],
+							"query": [
+								{
+									"key": "accountNumber",
+									"value": "514228468671"
+								},
+								{
+									"key": "from",
+									"value": "2025-01-01"
+								},
+								{
+									"key": "to",
+									"value": "2025-12-31"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Clients",
+			"item": [
+				{
+					"name": "New Client",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"Josefe\",\n  \"lastName\": \"Lema\",\n  \"gender\": \"FEMALE\",\n  \"birthDate\": \"1995-03-21\",\n  \"identificationType\": \"CC\",\n  \"identificationNumber\": \"0102034grf2\",\n  \"address\": \"Otavalo sn y principal\",\n  \"phone\": \"098254785\",\n  \"password\": \"superSecret!\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8090/clientes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"clientes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Client",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"Jose3\",\n  \"lastName\": \"Lema\",\n  \"gender\": \"MALE\",\n  \"birthDate\": \"1995-03-21\",\n  \"identificationType\": \"CC\",\n  \"identificationNumber\": \"01020345202\",\n  \"address\": \"Otavalo sn y principal\",\n  \"phone\": \"098254785\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8090/clientes/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"clientes",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"Jose\",\n  \"lastName\": \"Lema\",\n  \"gender\": \"MALE\",\n  \"birthDate\": \"1995-03-21\",\n  \"identificationType\": \"CC\",\n  \"identificationNumber\": \"01020345202\",\n  \"address\": \"Otavalo sn y principal\",\n  \"phone\": \"098254785\",\n  \"password\": \"superSecret!\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8090/clientes/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"clientes",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get clientID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"Jose\",\n  \"lastName\": \"Lema\",\n  \"gender\": \"MALE\",\n  \"birthDate\": \"1995-03-21\",\n  \"identificationType\": \"CC\",\n  \"identificationNumber\": \"01020345202\",\n  \"address\": \"Otavalo sn y principal\",\n  \"phone\": \"098254785\",\n  \"password\": \"superSecret!\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8090/clientes/clientId/122262279129",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"clientes",
+								"clientId",
+								"122262279129"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reports",
+			"item": [
+				{
+					"name": "Get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8091/reportes?clientId=313082865086&from=2025-01-01&to=2025-12-31",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8091",
+							"path": [
+								"reportes"
+							],
+							"query": [
+								{
+									"key": "clientId",
+									"value": "313082865086"
+								},
+								{
+									"key": "from",
+									"value": "2025-01-01"
+								},
+								{
+									"key": "to",
+									"value": "2025-12-31"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

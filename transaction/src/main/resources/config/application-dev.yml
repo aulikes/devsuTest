@@ -1,0 +1,15 @@
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    org.hibernate.SQL: WARN
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5434/transactions
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres
+
+clients:
+  base-url: http://localhost:8090/clientes/

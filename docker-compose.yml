@@ -1,0 +1,93 @@
+# Comando para el despliegue y agrupación por proyecto
+# docker compose -p devsu up -d
+
+services:
+  # -----------------------------
+  # PostgreSQL para USER (BD: clients)
+  # -----------------------------
+  postgres-clients:
+    image: postgres:16-alpine
+    container_name: devsu-postgres-clients
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: clients
+    ports:
+      - "5434:5432"     # host:container (opcional exponer)
+    volumes:
+      - pg_clients:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d clients"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # -----------------------------
+  # PostgreSQL para TRANSACTION (BD: transactions)
+  # -----------------------------
+  postgres-transactions:
+    image: postgres:16-alpine
+    container_name: devsu-postgres-transactions
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: transactions
+    ports:
+      - "5435:5432"     # host:container (opcional exponer)
+    volumes:
+      - pg_transactions:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d transactions"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # -----------------------------
+  # User Service (API clientes)
+  # -----------------------------
+  user:
+    build:
+      context: ./user
+      dockerfile: Dockerfile
+    image: user-api:latest
+    container_name: devsu-user
+    depends_on:
+      postgres-clients:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-clients:5432/clients
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    ports:
+      - "8090:8090"
+
+  # -----------------------------
+  # Transaction Service (API transacciones)
+  # -----------------------------
+  transaction:
+    build:
+      context: ./transaction
+      dockerfile: Dockerfile
+    image: transaction-api:latest
+    container_name: devsu-transaction
+    depends_on:
+      postgres-transactions:
+        condition: service_healthy
+      user:
+        condition: service_started
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-transactions:5432/transactions
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      CLIENTS_BASE_URL: http://user:8090/clientes
+    ports:
+      - "8091:8091"
+
+# ---------------------------------------------------
+# Volúmenes persistentes
+# ---------------------------------------------------
+volumes:
+  pg_clients:
+  pg_transactions:

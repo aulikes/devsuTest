@@ -1,0 +1,20 @@
+logging:
+  level:
+    feign: DEBUG
+    com.devsu.transaction.infrastructure.http.clients: DEBUG
+
+feign:
+  client:
+    config:
+      default:
+        loggerLevel: FULL
+
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    driver-class-name: org.postgresql.Driver
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+
+clients:
+  base-url: ${SPRING_CLIENTS_URL}

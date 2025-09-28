@@ -1,0 +1,12 @@
+CREATE TABLE IF NOT EXISTS genders (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  code VARCHAR(16) NOT NULL,
+  name VARCHAR(64) NOT NULL
+);
+CREATE UNIQUE INDEX IF NOT EXISTS uk_genders_code ON genders(code);
+
+INSERT INTO genders(code, name) VALUES
+  ('MALE', 'Male'),
+  ('FEMALE', 'Female'),
+  ('OTHER', 'Other')
+ON CONFLICT (code) DO NOTHING;

@@ -1,0 +1,131 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.5.6'
+	id 'io.spring.dependency-management' version '1.1.7'
+	id 'jacoco'
+	id "org.sonarqube" version "6.2.0.5505"
+}
+
+group = 'com.devsu'
+version = '0.0.1-SNAPSHOT'
+description = 'Demo project for Spring Boot'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.postgresql:postgresql'
+
+	// Spring Security
+	implementation "org.springframework.security:spring-security-crypto"
+
+	// Validaciones
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// Documentación API
+	implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${openapiVersion}"
+
+	// Flyway
+	implementation 'org.flywaydb:flyway-core'
+	implementation 'org.flywaydb:flyway-database-postgresql'
+
+	// Lombok
+	implementation "org.projectlombok:lombok:${projectlombokVersion}"
+	annotationProcessor "org.projectlombok:lombok:${projectlombokVersion}"
+	testImplementation "org.projectlombok:lombok:${projectlombokVersion}"
+	testAnnotationProcessor "org.projectlombok:lombok:${projectlombokVersion}"
+
+	// MapStruct
+	implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+	annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+	testImplementation "org.mapstruct:mapstruct:${mapstructVersion}"
+	testAnnotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+
+	// Testcontainers (gestionado por Spring Boot BOM)
+	testImplementation 'org.testcontainers:junit-jupiter'
+	testImplementation 'org.testcontainers:postgresql'
+	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+}
+
+// Plataforma de pruebas unitaria/integración (excluye E2E por etiqueta)
+tasks.named('test') {
+	useJUnitPlatform {
+		// Se excluyen las pruebas etiquetadas como 'e2e'
+		excludeTags 'e2e'
+	}
+	finalizedBy jacocoTestReport
+}
+
+// Reporte de cobertura para pruebas normales
+jacocoTestReport {
+	dependsOn test
+	reports {
+		xml.required = true
+		html.required = true
+		csv.required = false
+	}
+}
+
+// Tarea dedicada para E2E con Testcontainers (requiere Docker)
+// Solo ejecuta tests con @Tag("e2e") y habilita @EnabledIfEnvironmentVariable RUN_E2E=true
+tasks.register('e2eTest', Test) {
+	description = 'Ejecuta pruebas E2E con Testcontainers (requiere Docker)'
+	group = 'verification'
+	useJUnitPlatform {
+		includeTags 'e2e'
+	}
+	// Variable para habilitar @EnabledIfEnvironmentVariable en las clases E2E
+	environment 'RUN_E2E', 'true'
+	// Asegura que Gradle genere los reportes
+	reports {
+		html.required = true
+		junitXml.required = true
+	}
+	// Muestra passed/failed en consola
+	testLogging {
+		events "passed", "skipped", "failed"
+		exceptionFormat "full"
+		showStandardStreams = true
+	}
+}
+
+// Opcional: reporte Jacoco para E2E si se desea cobertura separada
+// tasks.register('jacocoE2eTestReport', JacocoReport) {
+// 	dependsOn tasks.e2eTest
+// 	executionData fileTree(dir: project.buildDir, includes: ['jacoco/e2eTest.exec'])
+// 	sourceSets sourceSets.main
+// 	reports {
+// 		xml.required = true
+// 		html.required = true
+// 		csv.required = false
+// 	}
+// }
+
+def sonarProps = new Properties()
+file("sonar-project.properties").withReader { sonarProps.load(it) }
+
+sonar {
+	properties {
+		sonarProps.each { k, v -> property(k, v) }
+	}
+}

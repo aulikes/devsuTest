@@ -1,0 +1,57 @@
+# Comando para el despliegue y agrupación por proyecto
+# docker compose -p devsu up -d
+
+services:
+  # ---------------------------------------------------
+  # PostgreSQL
+  # ---------------------------------------------------
+  postgres:
+    image: postgres:15
+    container_name: postgres-devsu
+    ports:
+      - "5434:5432" # host:container
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: transactions
+    volumes:
+      # persistencia real (ruta correcta de la imagen)
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d $$POSTGRES_DB" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - devsu-net
+
+  # ---------------------------------------------------
+  # App transactions
+  # ---------------------------------------------------
+  transaction:
+    build: .
+    image: transaction-api
+    container_name: transaction
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/transactions
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      CLIENTS_BASE_URL: http://user:8090/clientes/
+    ports:
+      - "8091:8091"
+    networks:
+      - devsu-net
+
+# ---------------------------------------------------
+# Volúmenes persistentes
+# ---------------------------------------------------
+volumes:
+  postgres_data:
+
+networks:
+  devsu-net:
+    name: devsu-net
